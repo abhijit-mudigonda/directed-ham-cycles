@@ -53,6 +53,10 @@ def testEvaluations(n: int, l: int):
         To do this, we pick a K, get just the last l bits by taking the AND with 
         q-1 (which is l 1's) and then rightshifting to get the next l bits. 
     """
+
+
+    #Idea - precompute all the possible relevant monomial values and store them. 
+    #Idea - do changes to the unvisited set using sortedcontainers
     for num in range(K):
         X = np.ndarray((m), dtype = int)
         for i in range(m):
