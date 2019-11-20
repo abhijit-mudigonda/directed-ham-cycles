@@ -7,6 +7,17 @@ from pyfinite import ffield
 import numpy as np
 
 def agreementPattern(n: int) -> List[int]:
+    """
+        n: The number of vertices in the complete graph in question
+
+        Returns and prints a length (n+1) list of integers whose ith entry is the number
+        of Hamiltonian cycles which share i edges with the Hamiltonian cycle
+        1 -> 2 -> 3 ... -> n -> 1 in the complete graph K_n
+
+
+        Hamiltonian cycles are enumerated by enumerating over permutations of n-1 elements. 
+    """
+
     agreements = [0]*(n+1)
     for perm in permutations(list(range(2,n+1))):
         agrees = 0
@@ -25,13 +36,23 @@ def testEvaluations(n: int, l: int):
     """
         n: The number of vertices in the complete graph in question
         l: F_2^l is the field we're working with
+
+
+        Returns and prints the fraction of assignments over F_2^l to the
+        edges of the complete graph K_n that yield a nonzero output. 
     """
-    m = n**2
-    q = 2**l
-    K = q**m
+    m = n**2 #edges
+    q = 2**l #field size
+    K = q**m 
     F = ffield.FField(l)
 
     zero_count = 0
+
+    """
+        K is an ml bit number. We want to split it up into l bit parts
+        To do this, we pick a K, get just the last l bits by taking the AND with 
+        q-1 (which is l 1's) and then rightshifting to get the next l bits. 
+    """
     for num in range(K):
         X = np.ndarray((m), dtype = int)
         for i in range(m):
@@ -50,22 +71,11 @@ def testEvaluations(n: int, l: int):
             evaluation = F.Add(monomial,evaluation)
         if evaluation == 0:
             zero_count += 1
-    print("When n = ", n, "and l = ", l, "the fraction of zeros was: ", float(zero_count)/K)
+    print("When n = ", n, "and l = ", l, "the fraction of nonzeros was: ", 1-float(zero_count)/K)
 
 if __name__ == "__main__":
-    """
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--num_vtx", required = True, type = int, action = "store", help = "number of vertices of the complete graph in question")
-    parser.add_argument("--field_exponent", required = True, type = int, action = "store", help = "power of 2 whose field you want to use")
-
-
-    args = parser.parse_args()
-    n = args.num_vtx
-    l = args.field_exponent
-    """
     for n in [4,5,6]:
-        for l in [1]:
-            testEvaluations(n,l)
+        testEvaluations(n,1)
 
 
 
